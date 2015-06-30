@@ -1,0 +1,6 @@
+alembic==0.7
+obd==0.4.0
+oslo.config==1.13
+oslo.db==2.0
+pyramid==1.5
+SQLAlchemy==1.0
