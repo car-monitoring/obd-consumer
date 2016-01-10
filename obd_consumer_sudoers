@@ -1,0 +1,1 @@
+%obd ALL=(root) NOPASSWD: /bin/chown -R obd\: /opt/obd-consumer, /usr/bin/chown -R obd\: /opt/obd-consumer

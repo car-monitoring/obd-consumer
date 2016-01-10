@@ -58,3 +58,7 @@ target/
 
 # Testr
 .testrepository
+
+# Temp files
+*~
+*.swp
