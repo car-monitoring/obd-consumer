@@ -3,4 +3,6 @@ set -e
 
 CONF=/etc/obd-consumer/obd-consumer.conf
 
-exec /usr/local/bin/obd-consumer-api
+sudo chown -R obd: /opt/obd-consumer
+
+exec /var/lib/obd-consumer/venv/bin/obd-consumer

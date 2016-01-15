@@ -11,6 +11,8 @@ import time
 import obd
 import six
 
+from obd_consumer import cache
+
 
 MAX_RETRY_COUNT = 5
 TIME_INTERVAL = 5
@@ -48,17 +50,14 @@ def execute_command(command):
 def fetch_data(command):
     response = execute_command(command)
     if response is not None:
-        print(response.value, response.unit)
+        return response.value, response.unit
+    return None, None
 
 
 def consumer_service():
     while True:
-        fetch_data(obd.commands.ENGINE_LOAD)
-        fetch_data(obd.commands.FUEL_LEVEL)
-        fetch_data(obd.commands.FUEL_STATUS)
-        fetch_data(obd.commands.FUEL_TYPE)
-        fetch_data(obd.commands.INTAKE_PRESSURE)
-        fetch_data(obd.commands.RPM)
-        fetch_data(obd.commands.SPEED)
+        for command in supported_commands:
+            value, unit = fetch_data(command)
+
 
         time.sleep(TIME_INTERVAL)
