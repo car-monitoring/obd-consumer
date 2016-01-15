@@ -56,8 +56,11 @@ def fetch_data(command):
 
 def consumer_service():
     while True:
-        for command in supported_commands:
+        connection = get_connection()
+        for command in connection.supported_commands:
             value, unit = fetch_data(command)
+            cache.push_data(command, value, unit)
+            print (command)
 
 
         time.sleep(TIME_INTERVAL)

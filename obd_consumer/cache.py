@@ -13,10 +13,11 @@ import redis
 def redis_conn(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        conn = redis.StrictRedis(host='redis',
+        conn = redis.StrictRedis(host='localhost',
                                  port=6379,
                                  db=0)
         return f(conn, *args, **kwargs)
+    return wrapper
 
 
 @redis_conn
