@@ -16,7 +16,7 @@ from obd_consumer import cache
 
 
 MAX_RETRY_COUNT = 5
-TIME_INTERVAL = 5
+TIME_INTERVAL = 2
 STATS_FREQUENCY = 6
 # STATS_FREQUENCY = 0
 
@@ -33,10 +33,20 @@ STATS_SUFIX_MAP = {
 }
 
 
+def _get_connection_with_retry():
+    reload(obd)
+    conn = obd.OBD()
+    if not conn.supported_commands:
+        time.sleep(3)
+        return _get_connection_with_retry()
+    return conn
+
+
 def get_connection():
     global _CONN
     if _CONN is None:
-        _CONN = obd.OBD()
+        _CONN = _get_connection_with_retry()
+        cache.push_supported_commands(_CONN.supported_commands)
     return _CONN
 
 
