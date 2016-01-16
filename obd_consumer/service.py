@@ -18,15 +18,16 @@ from obd_consumer import cache
 MAX_RETRY_COUNT = 5
 TIME_INTERVAL = 5
 STATS_FREQUENCY = 6
+# STATS_FREQUENCY = 0
 
 _CONN = None
 
 STATS_SUFIX_MAP = {
-    "0104: Calculated Engine Load": "/metrics/api/engine_load",
-    "012F: Fuel Level Input": "/metrics/api/fuel_level",
-    "0103: Fuel System Status": "/metrics/api/fuel_status"
-    "0151: Fuel Type": "/metrics/api/fuel_type",
-    "010B: Intake Manifold Pressure": "/metrics/api/intake_pressure",
+    "0104: Calculated Engine Load": "/metrics/api/engine_load/",
+    "012F: Fuel Level Input": "/metrics/api/fuel_level/",
+    "0103: Fuel System Status": "/metrics/api/fuel_status/",
+    "0151: Fuel Type": "/metrics/api/fuel_type/",
+    "010B: Intake Manifold Pressure": "/metrics/api/intake_pressure/",
     "010C: Engine RPM": "/metrics/api/rpm/",
     "010D: Vehicle Speed": "/metrics/api/speed/"
 }
@@ -67,19 +68,20 @@ def fetch_data(command):
 
 
 def push_to_server(command, value, unit):
+    command = str(command)
     if command not in STATS_SUFIX_MAP:
         return
 
     config = six.moves.configparser.ConfigParser()
     config.read('/etc/obd-consumer.conf')
 
-    url = config['DEFAULT']['url']
-    username = config['DEFAULT']['username']
-    password = config['DEFAULT']['password']
+    url = config.get('DEFAULT', 'url')
+    username = config.get('DEFAULT', 'username')
+    password = config.get('DEFAULT', 'password')
 
     payload = {"username": username, "password": password}
 
-    response = requests.post(url + '/api-token-auth', data=payload)
+    response = requests.post(url + '/api-token-auth/', data=payload)
 
     if not response.ok:
         return
@@ -88,7 +90,7 @@ def push_to_server(command, value, unit):
     header = {'Authorization': 'Token ' + token}
     data = {"value": value, "unit": unit}
     sufix = STATS_SUFIX_MAP[command]
-    requests.post(url + sufix, data=data, headers=header)
+    foo = requests.post(url + sufix, data=data, headers=header)
 
 
 def consumer_service():
@@ -103,6 +105,6 @@ def consumer_service():
             if x == STATS_FREQUENCY:
                 push_to_server(command, value, unit)
                 x = 0
-
+        x += 1
 
         time.sleep(TIME_INTERVAL)
