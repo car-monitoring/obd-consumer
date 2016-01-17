@@ -1,0 +1,12 @@
+CHANGES
+=======
+
+* cache supported commands
+* fixes
+* Add requests requirement
+* Send statistics to server
+* fix cache
+* Store data in redis
+* Reading metrict from OBD protocol
+* Basic consumer application
+* Initial commit
